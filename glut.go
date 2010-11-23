@@ -7,7 +7,7 @@ package glut
 // #endif
 // #include <stdlib.h>
 //
-// // DEFINE_FUNCS is needed because we cannot pass C function pointers in Go.
+// // DEFINE_FUNCS is needed because I'm unsure how to pass C function pointers in Go.
 // #define DEFINE_FUNCS(x, y, ...) \
 // extern void go_##y(__VA_ARGS__); \
 // void set##x##Func() { glut##x##Func(go_##y); } \
@@ -36,7 +36,6 @@ package glut
 // // timer's an odd duck - we ignore it for now.
 import "C"
 
-//import "gl"
 import "os"
 import "unsafe"
 
@@ -368,9 +367,9 @@ func SetCursor(cursor int) {
 	C.glutSetCursor(C.int(cursor))
 }
 
-// Overlay Management
+// TODO Overlay Management
 
-// Menu Management
+// TODO Menu Management
 
 // Callback Registration
 
@@ -544,20 +543,20 @@ func IdleFunc(idle func()) {
 	}
 }
 
-// Color Index Colormap Management
+// TODO Color Index Colormap Management
 
-// State Retrieval
+// TODO State Retrieval
 
-// Font Rendering
+// TODO Font Rendering
 
-// Geometric Object Rendering
+// TODO Geometric Object Rendering
 
 // Callbacks
 
 // cgo does not allow callbacks to arbitrary functions, so we must handle this 
 // ourselves.
 
-// odd export names work around go bug on mac os x
+// odd export names work around cgo bug on mac os x
 
 //export go_a
 func InternalDisplayFunc() {

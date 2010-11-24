@@ -341,7 +341,11 @@ func CreateWindow(title string) (w Window) {
 }
 
 func (w Window) CreateSubWindow(x, y, width, height int) Window {
-	return Window(C.glutCreateSubWindow(C.int(w), C.int(x), C.int(y), C.int(width), C.int(height)))
+	neww:= Window(C.glutCreateSubWindow(C.int(w), C.int(x), C.int(y), C.int(width), C.int(height)))
+	
+	winFuncs[w] = new(windowFuncs)
+	
+	return neww
 }
 
 func SetWindow(window Window) {

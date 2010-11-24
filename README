@@ -7,5 +7,4 @@ To install:
 
 Before calling any other function, call glut.Init()
 
-Some functions may be missing (sorry)
 Tested on Mac OS X... if you have problems on another platform, please let me know (sorry)

@@ -33,10 +33,15 @@ package glut
 // DEFINE_FUNCS(TabletButton, q, int button, int state, int x, int y)
 // DEFINE_FUNCS(MenuStatus, r, int status, int x, int y)
 // DEFINE_FUNCS(Idle, s)
+// // timer's an odd duck - we ignore it for now.
 // extern void go_t(int value); // glutCreateMenu callback
 // int goCreateMenu() { return glutCreateMenu(go_t); }
 // int goCreateMenuWithoutCallback() { return glutCreateMenu(NULL); }
-// // timer's an odd duck - we ignore it for now.
+// DEFINE_FUNCS(KeyboardUp, u, unsigned char key, int x, int y)
+// DEFINE_FUNCS(SpecialUp, v, int key, int x, int y)
+// extern void go_w(unsigned int buttonMask, int x, int y, int z); // glutJoystickFunc callback
+// void setJoystickFunc(int pollInterval) { glutJoystickFunc(go_w, pollInterval); }
+// void clearJoystickFunc(int pollInterval) { glutJoystickFunc(NULL, pollInterval); }
 import "C"
 
 import "os"
@@ -53,6 +58,7 @@ type (
 	Font interface {
 		Character(character int) // Renders a character
 		Width(character int)     // Width in pixels of character
+		Length(str string)       // Width in pixels of a string
 	}
 
 	windowFuncs struct {
@@ -75,6 +81,10 @@ type (
 		tabletButton    func(button, state, x, y int)
 		menuStatus      func(status, x, y int)
 		idle            func()
+		windowStatus    func(state int)
+		keyboardUp      func(key byte, x, y int)
+		specialUp       func(key, x, y int)
+		joystick        func(buttonMask uint, x, y, z int)
 	}
 )
 
@@ -253,6 +263,23 @@ const (
 	CURSOR_INHERIT             = C.GLUT_CURSOR_INHERIT
 	CURSOR_NONE                = C.GLUT_CURSOR_NONE
 	CURSOR_FULL_CROSSHAIR      = C.GLUT_CURSOR_FULL_CROSSHAIR
+
+	KEY_REPEAT_OFF     = C.GLUT_KEY_REPEAT_OFF
+	KEY_REPEAT_ON      = C.GLUT_KEY_REPEAT_ON
+	KEY_REPEAT_DEFAULT = C.GLUT_KEY_REPEAT_DEFAULT
+
+	JOYSTICK_BUTTON_A = C.GLUT_JOYSTICK_BUTTON_A
+	JOYSTICK_BUTTON_B = C.GLUT_JOYSTICK_BUTTON_B
+	JOYSTICK_BUTTON_C = C.GLUT_JOYSTICK_BUTTON_C
+	JOYSTICK_BUTTON_D = C.GLUT_JOYSTICK_BUTTON_D
+
+	GAME_MODE_ACTIVE          = C.GLUT_GAME_MODE_ACTIVE
+	GAME_MODE_POSSIBLE        = C.GLUT_GAME_MODE_POSSIBLE
+	GAME_MODE_WIDTH           = C.GLUT_GAME_MODE_WIDTH
+	GAME_MODE_HEIGHT          = C.GLUT_GAME_MODE_HEIGHT
+	GAME_MODE_PIXEL_DEPTH     = C.GLUT_GAME_MODE_PIXEL_DEPTH
+	GAME_MODE_REFRESH_RATE    = C.GLUT_GAME_MODE_REFRESH_RATE
+	GAME_MODE_DISPLAY_CHANGED = C.GLUT_GAME_MODE_DISPLAY_CHANGED
 )
 
 var (
@@ -287,6 +314,12 @@ func InitWindowSize(width, height int) {
 
 func InitDisplayMode(mode uint) {
 	C.glutInitDisplayMode(C.uint(mode))
+}
+
+func InitDisplayString(str string) {
+	cstr := C.CString(str)
+	C.glutInitDisplayString(cstr)
+	C.free(unsafe.Pointer(cstr))
 }
 
 // - Beginning Event Processing
@@ -327,6 +360,10 @@ func (w Window) Destroy() {
 
 func PostRedisplay() {
 	C.glutPostRedisplay()
+}
+
+func (w Window) PostRedisplay() {
+	C.glutPostWindowRedisplay(C.int(w))
 }
 
 func SwapBuffers() {
@@ -381,6 +418,10 @@ func SetCursor(cursor int) {
 	C.glutSetCursor(C.int(cursor))
 }
 
+func WarpPointer(x, y int) {
+	C.glutWarpPointer(C.int(x), C.int(y))
+}
+
 // - Overlay Management
 
 func EstablishOverlay() {
@@ -397,6 +438,10 @@ func RemoveOverlay() {
 
 func PostOverlayRedisplay() {
 	C.glutPostOverlayRedisplay()
+}
+
+func (w Window) PostOverlayRedisplay() {
+	C.glutPostWindowOverlayRedisplay(C.int(w))
 }
 
 func ShowOverlay() {
@@ -431,6 +476,7 @@ func GetMenu() Menu {
 
 func (m Menu) Destroy() {
 	C.glutDestroyMenu(C.int(m))
+	menuFuncs[m] = nil, false
 }
 
 func AddMenuEntry(name string, value int) {
@@ -641,6 +687,33 @@ func IdleFunc(idle func()) {
 	}
 }
 
+func KeyboardUpFunc(keyboardUp func(key byte, x, y int)) {
+	winFuncs[GetWindow()].keyboardUp = keyboardUp
+	if keyboardUp != nil {
+		C.setKeyboardUpFunc()
+	} else {
+		C.clearKeyboardUpFunc()
+	}
+}
+
+func SpecialUpFunc(specialUp func(key, x, y int)) {
+	winFuncs[GetWindow()].specialUp = specialUp
+	if specialUp != nil {
+		C.setSpecialUpFunc()
+	} else {
+		C.clearSpecialUpFunc()
+	}
+}
+
+func JoystickFunc(joystick func(buttonMask uint, x, y, z int), pollInterval int) {
+	winFuncs[GetWindow()].joystick = joystick
+	if joystick != nil {
+		C.setJoystickFunc(C.int(pollInterval))
+	} else {
+		C.clearJoystickFunc(C.int(pollInterval))
+	}
+}
+
 // - Color Index Colormap Management
 
 func SetColor(cell int, red, green, blue gl.GLfloat) {
@@ -720,12 +793,26 @@ func (b BitmapFont) Width(character int) int {
 	return int(C.glutBitmapWidth(fontaddr(int(b)), C.int(character)))
 }
 
+func (b BitmapFont) Length(str string) int {
+	cstr := C.CString(str)
+	strlen := C.glutBitmapLength(fontaddr(int(b)), (*C.uchar)(unsafe.Pointer(cstr)))
+	C.free(unsafe.Pointer(cstr))
+	return int(strlen)
+}
+
 func (s StrokeFont) Character(character int) {
 	C.glutStrokeCharacter(fontaddr(int(s)), C.int(character))
 }
 
 func (s StrokeFont) Width(character int) int {
 	return int(C.glutStrokeWidth(fontaddr(int(s)), C.int(character)))
+}
+
+func (s StrokeFont) Length(str string) int {
+	cstr := C.CString(str)
+	strlen := C.glutStrokeLength(fontaddr(int(s)), (*C.uchar)(unsafe.Pointer(cstr)))
+	C.free(unsafe.Pointer(cstr))
+	return int(strlen)
 }
 
 // - Geometric Object Rendering
@@ -801,6 +888,68 @@ func SolidTeapot(size gl.GLdouble) {
 
 func WireTeapot(size gl.GLdouble) {
 	C.glutWireTeapot(C.GLdouble(size))
+}
+
+// - Video Resize
+
+func VideoResizeGet(param gl.GLenum) int {
+	return int(C.glutVideoResizeGet(C.GLenum(param)))
+}
+
+func SetupVideoResizing() {
+	C.glutSetupVideoResizing()
+}
+
+func StopVideoResizing() {
+	C.glutStopVideoResizing()
+}
+
+func VideoResize(x, y, width, height int) {
+	C.glutVideoResize(C.int(x), C.int(y), C.int(width), C.int(height))
+}
+
+func VideoPan(x, y, width, height int) {
+	C.glutVideoPan(C.int(x), C.int(y), C.int(width), C.int(height))
+}
+
+// - Debugging
+
+func ReportErrors() {
+	C.glutReportErrors()
+}
+
+// - Device Control
+
+func IgnoreKeyRepeat(ignore int) {
+	C.glutIgnoreKeyRepeat(C.int(ignore))
+}
+
+func SetKeyRepeat(repeatMode int) {
+	C.glutSetKeyRepeat(C.int(repeatMode))
+}
+
+func ForceJoystickFunc() {
+	C.glutForceJoystickFunc()
+}
+
+// - Game Mode
+
+func GameModeString(str string) {
+	cstr := C.CString(str)
+	C.glutGameModeString(cstr)
+	C.free(unsafe.Pointer(cstr))
+}
+
+func EnterGameMode() int {
+	return int(C.glutEnterGameMode())
+}
+
+func LeaveGameMode() {
+	C.glutLeaveGameMode()
+}
+
+func GameModeGet(mode gl.GLenum) int {
+	return int(C.glutGameModeGet(C.GLenum(mode)))
 }
 
 // - Callbacks
@@ -906,4 +1055,19 @@ func InternalIdleFunc() {
 //export go_t
 func InternalMenuFunc(state int) {
 	menuFuncs[GetMenu()](state)
+}
+
+//export go_u
+func InternalKeyboardUpFunc(key byte, x, y int) {
+	winFuncs[GetWindow()].keyboardUp(key, x, y)
+}
+
+//export go_v
+func InternalSpecialUpFunc(key, x, y int) {
+	winFuncs[GetWindow()].specialUp(key, x, y)
+}
+
+//export go_w
+func InternalJoystickFunc(buttonMask uint, x, y, z int) {
+	winFuncs[GetWindow()].joystick(buttonMask, x, y, z)
 }

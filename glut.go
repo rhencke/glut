@@ -43,6 +43,12 @@ import "gl"
 
 type (
 	Window int
+	Font   interface {
+		Character(character int) // Renders a character
+		Width(character int)     // Width in pixels of character
+	}
+	BitmapFont int
+	StrokeFont int
 
 	windowFuncs struct {
 		display         func()
@@ -132,15 +138,15 @@ const (
 	NORMAL  = C.GLUT_NORMAL
 	OVERLAY = C.GLUT_OVERLAY
 
-	// STROKE_ROMAN          = C.GLUT_STROKE_ROMAN
-	// STROKE_MONO_ROMAN     = C.GLUT_STROKE_MONO_ROMAN
-	// BITMAP_9_BY_15        = C.GLUT_BITMAP_9_BY_15
-	// BITMAP_8_BY_13        = C.GLUT_BITMAP_8_BY_13
-	// BITMAP_TIMES_ROMAN_10 = C.GLUT_BITMAP_TIMES_ROMAN_10
-	// BITMAP_TIMES_ROMAN_24 = C.GLUT_BITMAP_TIMES_ROMAN_24
-	// BITMAP_HELVETICA_10   = C.GLUT_BITMAP_HELVETICA_10
-	// BITMAP_HELVETICA_12   = C.GLUT_BITMAP_HELVETICA_12
-	// BITMAP_HELVETICA_18   = C.GLUT_BITMAP_HELVETICA_18
+	STROKE_ROMAN          StrokeFont = iota //C.GLUT_STROKE_ROMAN
+	STROKE_MONO_ROMAN     StrokeFont = iota //C.GLUT_STROKE_MONO_ROMAN
+	BITMAP_9_BY_15        BitmapFont = iota //C.GLUT_BITMAP_9_BY_15
+	BITMAP_8_BY_13        BitmapFont = iota //C.GLUT_BITMAP_8_BY_13
+	BITMAP_TIMES_ROMAN_10 BitmapFont = iota //C.GLUT_BITMAP_TIMES_ROMAN_10
+	BITMAP_TIMES_ROMAN_24 BitmapFont = iota //C.GLUT_BITMAP_TIMES_ROMAN_24
+	BITMAP_HELVETICA_10   BitmapFont = iota //C.GLUT_BITMAP_HELVETICA_10
+	BITMAP_HELVETICA_12   BitmapFont = iota //C.GLUT_BITMAP_HELVETICA_12
+	BITMAP_HELVETICA_18   BitmapFont = iota //C.GLUT_BITMAP_HELVETICA_18
 
 	WINDOW_X                = C.GLUT_WINDOW_X
 	WINDOW_Y                = C.GLUT_WINDOW_Y
@@ -373,7 +379,7 @@ func SetCursor(cursor int) {
 
 // TODO Menu Management
 
-// Callback Registration
+// - Callback Registration
 
 func DisplayFunc(display func()) {
 	if display == nil {
@@ -545,7 +551,7 @@ func IdleFunc(idle func()) {
 	}
 }
 
-// Color Index Colormap Management
+// - Color Index Colormap Management
 
 func SetColor(cell int, red, green, blue gl.GLfloat) {
 	C.glutSetColor(C.int(cell), C.GLfloat(red), C.GLfloat(green), C.GLfloat(blue))
@@ -565,7 +571,7 @@ func CopyColormap(win Window) {
 	C.glutCopyColormap(C.int(win))
 }
 
-// State Retrieval
+// - State Retrieval
 
 func Get(state gl.GLenum) int {
 	return int(C.glutGet(C.GLenum(state)))
@@ -590,16 +596,127 @@ func ExtensionSupported(extension string) (supported bool) {
 	return
 }
 
-// TODO Font Rendering
+// - Font Rendering
 
-// TODO Geometric Object Rendering
+func fontaddr(f int) unsafe.Pointer {
+	switch f {
+	case int(STROKE_ROMAN):
+		return unsafe.Pointer(C.GLUT_STROKE_ROMAN)
+	case int(STROKE_MONO_ROMAN):
+		return unsafe.Pointer(C.GLUT_STROKE_MONO_ROMAN)
+	case int(BITMAP_9_BY_15):
+		return unsafe.Pointer(C.GLUT_BITMAP_9_BY_15)
+	case int(BITMAP_8_BY_13):
+		return unsafe.Pointer(C.GLUT_BITMAP_8_BY_13)
+	case int(BITMAP_TIMES_ROMAN_10):
+		return unsafe.Pointer(C.GLUT_BITMAP_TIMES_ROMAN_10)
+	case int(BITMAP_TIMES_ROMAN_24):
+		return unsafe.Pointer(C.GLUT_BITMAP_TIMES_ROMAN_24)
+	case int(BITMAP_HELVETICA_10):
+		return unsafe.Pointer(C.GLUT_BITMAP_HELVETICA_10)
+	case int(BITMAP_HELVETICA_12):
+		return unsafe.Pointer(C.GLUT_BITMAP_HELVETICA_12)
+	case int(BITMAP_HELVETICA_18):
+		return unsafe.Pointer(C.GLUT_BITMAP_HELVETICA_18)
+	}
+	panic("unknown font")
+}
 
-// Callbacks
+func (b BitmapFont) Character(character int) {
+	C.glutBitmapCharacter(fontaddr(int(b)), C.int(character))
+}
+
+func (b BitmapFont) Width(character int) int {
+	return int(C.glutBitmapWidth(fontaddr(int(b)), C.int(character)))
+}
+
+func (s StrokeFont) Character(character int) {
+	C.glutStrokeCharacter(fontaddr(int(s)), C.int(character))
+}
+
+func (s StrokeFont) Width(character int) int {
+	return int(C.glutStrokeWidth(fontaddr(int(s)), C.int(character)))
+}
+
+// - Geometric Object Rendering
+
+func SolidSphere(radius gl.GLdouble, slices, stacks gl.GLint) {
+	C.glutSolidSphere(C.GLdouble(radius), C.GLint(slices), C.GLint(stacks))
+}
+
+func WireSphere(radius gl.GLdouble, slices, stacks gl.GLint) {
+	C.glutWireSphere(C.GLdouble(radius), C.GLint(slices), C.GLint(stacks))
+}
+
+func SolidCube(size gl.GLdouble) {
+	C.glutSolidCube(C.GLdouble(size))
+}
+
+func WireCube(size gl.GLdouble) {
+	C.glutWireCube(C.GLdouble(size))
+}
+
+func SolidCone(base, height gl.GLdouble, slices, stacks gl.GLint) {
+	C.glutSolidCone(C.GLdouble(base), C.GLdouble(height), C.GLint(slices), C.GLint(stacks))
+}
+
+func WireCone(base, height gl.GLdouble, slices, stacks gl.GLint) {
+	C.glutWireCone(C.GLdouble(base), C.GLdouble(height), C.GLint(slices), C.GLint(stacks))
+}
+
+func SolidTorus(innerRadius, outerRadius gl.GLdouble, nsides, rings gl.GLint) {
+	C.glutSolidTorus(C.GLdouble(innerRadius), C.GLdouble(outerRadius), C.GLint(nsides), C.GLint(rings))
+}
+
+func WireTorus(innerRadius, outerRadius gl.GLdouble, nsides, rings gl.GLint) {
+	C.glutWireTorus(C.GLdouble(innerRadius), C.GLdouble(outerRadius), C.GLint(nsides), C.GLint(rings))
+}
+
+func SolidDodecahedron() {
+	C.glutSolidDodecahedron()
+}
+
+func WireDodecahedron() {
+	C.glutWireDodecahedron()
+}
+
+func SolidOctahedron() {
+	C.glutSolidOctahedron()
+}
+
+func WireOctahedron() {
+	C.glutWireOctahedron()
+}
+
+func SolidTetrahedron() {
+	C.glutSolidTetrahedron()
+}
+
+func WireTetrahedron() {
+	C.glutWireTetrahedron()
+}
+
+func SolidIcosahedron() {
+	C.glutSolidIcosahedron()
+}
+
+func WireIcosahedron() {
+	C.glutWireIcosahedron()
+}
+
+// And, of course:
+func SolidTeapot(size gl.GLdouble) {
+	C.glutSolidTeapot(C.GLdouble(size))
+}
+
+func WireTeapot(size gl.GLdouble) {
+	C.glutWireTeapot(C.GLdouble(size))
+}
+
+// - Callbacks
 
 // cgo does not allow callbacks to arbitrary functions, so we must handle this 
-// ourselves.
-
-// odd export names work around cgo bug on mac os x
+// ourselves.  The alphabetical export names work around a cgo bug on Mac OS X.
 
 //export go_a
 func InternalDisplayFunc() {

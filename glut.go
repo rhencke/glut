@@ -39,6 +39,8 @@ import "C"
 import "os"
 import "unsafe"
 
+import "gl"
+
 type (
 	Window int
 
@@ -543,9 +545,50 @@ func IdleFunc(idle func()) {
 	}
 }
 
-// TODO Color Index Colormap Management
+// Color Index Colormap Management
 
-// TODO State Retrieval
+func SetColor(cell int, red, green, blue gl.GLfloat) {
+	C.glutSetColor(C.int(cell), C.GLfloat(red), C.GLfloat(green), C.GLfloat(blue))
+}
+
+func GetColor(cell int) (red, green, blue gl.GLfloat) {
+	ccell := C.int(cell)
+
+	red = gl.GLfloat(C.glutGetColor(ccell, RED))
+	green = gl.GLfloat(C.glutGetColor(ccell, GREEN))
+	blue = gl.GLfloat(C.glutGetColor(ccell, BLUE))
+
+	return
+}
+
+func CopyColormap(win Window) {
+	C.glutCopyColormap(C.int(win))
+}
+
+// State Retrieval
+
+func Get(state gl.GLenum) int {
+	return int(C.glutGet(C.GLenum(state)))
+}
+
+func LayerGet(info gl.GLenum) int {
+	return int(C.glutLayerGet(C.GLenum(info)))
+}
+
+func DeviceGet(info gl.GLenum) int {
+	return int(C.glutDeviceGet(C.GLenum(info)))
+}
+
+func GetModifiers() int {
+	return int(C.glutGetModifiers())
+}
+
+func ExtensionSupported(extension string) (supported bool) {
+	cextension := C.CString(extension)
+	supported = C.glutExtensionSupported(cextension) != 0
+	C.free(unsafe.Pointer(cextension))
+	return
+}
 
 // TODO Font Rendering
 

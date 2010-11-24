@@ -1,6 +1,6 @@
 Go bindings for GLUT : https://github.com/rhencke/Go-GLUT
 
-Works well with: https://github.com/banthar/Go-OpenGL
+Requires: https://github.com/banthar/Go-OpenGL (for basic OpenGL data types)
 
 To install:
     make install

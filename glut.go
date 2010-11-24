@@ -33,6 +33,9 @@ package glut
 // DEFINE_FUNCS(TabletButton, q, int button, int state, int x, int y)
 // DEFINE_FUNCS(MenuStatus, r, int status, int x, int y)
 // DEFINE_FUNCS(Idle, s)
+// extern void go_t(int value); // glutCreateMenu callback
+// int goCreateMenu() { return glutCreateMenu(go_t); }
+// int goCreateMenuWithoutCallback() { return glutCreateMenu(NULL); }
 // // timer's an odd duck - we ignore it for now.
 import "C"
 
@@ -42,13 +45,15 @@ import "unsafe"
 import "gl"
 
 type (
-	Window int
-	Font   interface {
+	Window     int
+	BitmapFont int
+	StrokeFont int
+	Menu       int
+
+	Font interface {
 		Character(character int) // Renders a character
 		Width(character int)     // Width in pixels of character
 	}
-	BitmapFont int
-	StrokeFont int
 
 	windowFuncs struct {
 		display         func()
@@ -251,11 +256,12 @@ const (
 )
 
 var (
-	idleFunc func()
-	winFuncs = make(map[Window]*windowFuncs)
+	idleFunc  func()
+	winFuncs  = make(map[Window]*windowFuncs)
+	menuFuncs = make(map[Menu]func(value int))
 )
 
-// Initialization
+// - Initialization
 
 func Init() {
 	argc := C.int(len(os.Args))
@@ -283,13 +289,13 @@ func InitDisplayMode(mode uint) {
 	C.glutInitDisplayMode(C.uint(mode))
 }
 
-// Beginning Event Processing
+// - Beginning Event Processing
 
 func MainLoop() {
 	C.glutMainLoop()
 }
 
-// Window Management
+// - Window Management
 
 func CreateWindow(title string) (w Window) {
 	ctitle := C.CString(title)
@@ -375,9 +381,93 @@ func SetCursor(cursor int) {
 	C.glutSetCursor(C.int(cursor))
 }
 
-// TODO Overlay Management
+// - Overlay Management
 
-// TODO Menu Management
+func EstablishOverlay() {
+	C.glutEstablishOverlay()
+}
+
+func UseLayer(layer gl.GLenum) {
+	C.glutUseLayer(C.GLenum(layer))
+}
+
+func RemoveOverlay() {
+	C.glutRemoveOverlay()
+}
+
+func PostOverlayRedisplay() {
+	C.glutPostOverlayRedisplay()
+}
+
+func ShowOverlay() {
+	C.glutShowOverlay()
+}
+
+func HideOverlay() {
+	C.glutHideOverlay()
+}
+
+// - Menu Management
+
+func CreateMenu(menu func(value int)) (m Menu) {
+	if menu != nil {
+		m = Menu(C.goCreateMenu())
+	} else {
+		m = Menu(C.goCreateMenuWithoutCallback())
+	}
+
+	menuFuncs[m] = menu
+
+	return
+}
+
+func SetMenu(menu Menu) {
+	C.glutSetMenu(C.int(menu))
+}
+
+func GetMenu() Menu {
+	return Menu(C.glutGetMenu())
+}
+
+func (m Menu) Destroy() {
+	C.glutDestroyMenu(C.int(m))
+}
+
+func AddMenuEntry(name string, value int) {
+	cname := C.CString(name)
+	C.glutAddMenuEntry(cname, C.int(value))
+	C.free(unsafe.Pointer(cname))
+}
+
+func AddSubMenu(name string, value int) {
+	cname := C.CString(name)
+	C.glutAddSubMenu(cname, C.int(value))
+	C.free(unsafe.Pointer(cname))
+}
+
+func ChangeToMenuEntry(entry int, name string, value int) {
+	cname := C.CString(name)
+	C.glutChangeToMenuEntry(C.int(entry), cname, C.int(value))
+	C.free(unsafe.Pointer(cname))
+}
+
+func ChangeToSubMenu(entry int, name string, value int) {
+	cname := C.CString(name)
+	C.glutChangeToSubMenu(C.int(entry), cname, C.int(value))
+	C.free(unsafe.Pointer(cname))
+}
+
+func RemoveMenuItem(entry int) {
+	C.glutRemoveMenuItem(C.int(entry))
+}
+
+func AttachMenu(button int) {
+	C.glutAttachMenu(C.int(button))
+}
+
+func DetachMenu(button int) {
+	C.glutDetachMenu(C.int(button))
+}
 
 // - Callback Registration
 
@@ -811,4 +901,9 @@ func InternalMenuStatusFunc(status, x, y int) {
 //export go_s
 func InternalIdleFunc() {
 	idleFunc()
+}
+
+//export go_t
+func InternalMenuFunc(state int) {
+	menuFuncs[GetMenu()](state)
 }

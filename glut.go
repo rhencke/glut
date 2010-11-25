@@ -489,7 +489,7 @@ func AddMenuEntry(name string, value int) {
 	C.free(unsafe.Pointer(cname))
 }
 
-func AddSubMenu(name string, value int) {
+func AddSubMenu(name string, value Menu) {
 	cname := C.CString(name)
 	C.glutAddSubMenu(cname, C.int(value))
 	C.free(unsafe.Pointer(cname))
@@ -1062,7 +1062,7 @@ func InternalMenuFunc(state int) {
 }
 
 //export go_u
-func InternalKeyboardUpFunc(key byte, x, y int) {
+func InternalKeyboardUpFunc(key uint8, x, y int) {
 	winFuncs[GetWindow()].keyboardUp(key, x, y)
 }
 

@@ -57,8 +57,8 @@ type (
 
 	Font interface {
 		Character(character int) // Renders a character
-		Width(character int)     // Width in pixels of character
-		Length(str string)       // Width in pixels of a string
+		Width(character int) int // Width in pixels of character
+		Length(str string) int   // Width in pixels of a string
 	}
 
 	windowFuncs struct {
@@ -341,10 +341,10 @@ func CreateWindow(title string) (w Window) {
 }
 
 func (w Window) CreateSubWindow(x, y, width, height int) Window {
-	neww:= Window(C.glutCreateSubWindow(C.int(w), C.int(x), C.int(y), C.int(width), C.int(height)))
-	
+	neww := Window(C.glutCreateSubWindow(C.int(w), C.int(x), C.int(y), C.int(width), C.int(height)))
+
 	winFuncs[neww] = new(windowFuncs)
-	
+
 	return neww
 }
 

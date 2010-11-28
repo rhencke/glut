@@ -288,9 +288,10 @@ const (
 )
 
 var (
-	idleFunc  func()
-	winFuncs  = make(map[Window]*windowFuncs)
-	menuFuncs = make(map[Menu]func(value int))
+	idleFunc   func()
+	winFuncs   = make(map[Window]*windowFuncs)
+	menuFuncs  = make(map[Menu]func(value int))
+	gameWindow *Window
 )
 
 // - Initialization
@@ -335,12 +336,20 @@ func MainLoop() {
 
 // - Window Management
 
+func registerWindow(w Window) {
+	winFuncs[w] = new(windowFuncs)
+}
+
+func unregisterWindow(w Window) {
+	winFuncs[w] = nil, false
+}
+
 func CreateWindow(title string) (w Window) {
 	ctitle := C.CString(title)
 	w = Window(C.glutCreateWindow(ctitle))
 	C.free(unsafe.Pointer(ctitle))
 
-	winFuncs[w] = new(windowFuncs)
+	registerWindow(w)
 
 	return
 }
@@ -348,7 +357,7 @@ func CreateWindow(title string) (w Window) {
 func (w Window) CreateSubWindow(x, y, width, height int) Window {
 	neww := Window(C.glutCreateSubWindow(C.int(w), C.int(x), C.int(y), C.int(width), C.int(height)))
 
-	winFuncs[neww] = new(windowFuncs)
+	registerWindow(neww)
 
 	return neww
 }
@@ -364,7 +373,7 @@ func GetWindow() Window {
 func (w Window) Destroy() {
 	C.glutDestroyWindow(C.int(w))
 
-	winFuncs[w] = nil, false
+	unregisterWindow(w)
 }
 
 func PostRedisplay() {
@@ -949,12 +958,23 @@ func GameModeString(str string) {
 	C.free(unsafe.Pointer(cstr))
 }
 
-func EnterGameMode() int {
-	return int(C.glutEnterGameMode())
+func EnterGameMode() Window {
+	w := Window(C.glutEnterGameMode())
+
+	if gameWindow != nil {
+		unregisterWindow(*gameWindow)
+	}
+	registerWindow(w)
+	gameWindow = &w
+
+	return w
 }
 
 func LeaveGameMode() {
 	C.glutLeaveGameMode()
+
+	unregisterWindow(*gameWindow)
+	gameWindow = nil
 }
 
 func GameModeGet(mode gl.GLenum) int {

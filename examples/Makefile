@@ -4,9 +4,12 @@
 
 include $(GOROOT)/src/Make.inc
 
-all: simple
+all: fontdemo simple
 
-simple: simple.go
-	$(GC) simple.go
-	$(LD) -o $@ simple.$(O)
+clean:
+	rm -f $(patsubst %.go,%.$(O),$(wildcard *.go)) $(patsubst %.go,%,$(wildcard *.go))
+
+%: %.go
+	$(GC) $<
+	$(LD) -o $@ $@.$(O)
 

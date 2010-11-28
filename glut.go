@@ -42,6 +42,17 @@ package glut
 // extern void go_w(unsigned int buttonMask, int x, int y, int z); // glutJoystickFunc callback
 // void setJoystickFunc(int pollInterval) { glutJoystickFunc(go_w, pollInterval); }
 // void clearJoystickFunc(int pollInterval) { glutJoystickFunc(NULL, pollInterval); }
+//
+// #define DEFINE_FONT(x) void* go_##x() { return x; }
+// DEFINE_FONT(GLUT_STROKE_ROMAN)
+// DEFINE_FONT(GLUT_STROKE_MONO_ROMAN)
+// DEFINE_FONT(GLUT_BITMAP_9_BY_15)
+// DEFINE_FONT(GLUT_BITMAP_8_BY_13)
+// DEFINE_FONT(GLUT_BITMAP_TIMES_ROMAN_10)
+// DEFINE_FONT(GLUT_BITMAP_TIMES_ROMAN_24)
+// DEFINE_FONT(GLUT_BITMAP_HELVETICA_10)
+// DEFINE_FONT(GLUT_BITMAP_HELVETICA_12)
+// DEFINE_FONT(GLUT_BITMAP_HELVETICA_18)
 import "C"
 
 import "os"
@@ -54,12 +65,6 @@ type (
 	BitmapFont int
 	StrokeFont int
 	Menu       int
-
-	Font interface {
-		Character(character int) // Renders a character
-		Width(character int) int // Width in pixels of character
-		Length(str string) int   // Width in pixels of a string
-	}
 
 	windowFuncs struct {
 		display         func()
@@ -768,23 +773,23 @@ func ExtensionSupported(extension string) (supported bool) {
 func fontaddr(f int) unsafe.Pointer {
 	switch f {
 	case int(STROKE_ROMAN):
-		return unsafe.Pointer(C.GLUT_STROKE_ROMAN)
+		return unsafe.Pointer(C.go_GLUT_STROKE_ROMAN())
 	case int(STROKE_MONO_ROMAN):
-		return unsafe.Pointer(C.GLUT_STROKE_MONO_ROMAN)
+		return unsafe.Pointer(C.go_GLUT_STROKE_MONO_ROMAN())
 	case int(BITMAP_9_BY_15):
-		return unsafe.Pointer(C.GLUT_BITMAP_9_BY_15)
+		return unsafe.Pointer(C.go_GLUT_BITMAP_9_BY_15())
 	case int(BITMAP_8_BY_13):
-		return unsafe.Pointer(C.GLUT_BITMAP_8_BY_13)
+		return unsafe.Pointer(C.go_GLUT_BITMAP_8_BY_13())
 	case int(BITMAP_TIMES_ROMAN_10):
-		return unsafe.Pointer(C.GLUT_BITMAP_TIMES_ROMAN_10)
+		return unsafe.Pointer(C.go_GLUT_BITMAP_TIMES_ROMAN_10())
 	case int(BITMAP_TIMES_ROMAN_24):
-		return unsafe.Pointer(C.GLUT_BITMAP_TIMES_ROMAN_24)
+		return unsafe.Pointer(C.go_GLUT_BITMAP_TIMES_ROMAN_24())
 	case int(BITMAP_HELVETICA_10):
-		return unsafe.Pointer(C.GLUT_BITMAP_HELVETICA_10)
+		return unsafe.Pointer(C.go_GLUT_BITMAP_HELVETICA_10())
 	case int(BITMAP_HELVETICA_12):
-		return unsafe.Pointer(C.GLUT_BITMAP_HELVETICA_12)
+		return unsafe.Pointer(C.go_GLUT_BITMAP_HELVETICA_12())
 	case int(BITMAP_HELVETICA_18):
-		return unsafe.Pointer(C.GLUT_BITMAP_HELVETICA_18)
+		return unsafe.Pointer(C.go_GLUT_BITMAP_HELVETICA_18())
 	}
 	panic("unknown font")
 }

@@ -4,7 +4,7 @@
 
 include $(GOROOT)/src/Make.inc
 
-all: fontdemo simple
+all: fontdemo simple asteroids
 
 clean:
 	rm -f $(patsubst %.go,%.$(O),$(wildcard *.go)) $(patsubst %.go,%,$(wildcard *.go))

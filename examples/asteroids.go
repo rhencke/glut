@@ -15,15 +15,15 @@ import "gl"
 import "glut"
 
 var (
-	angle                         float
+	angle                         gl.GLfloat
 	left, right                   bool
 	leftTime, rightTime           int
 	thrust                        bool
 	thrustTime                    int
 	joyThrust, joyLeft, joyRight  bool
-	x                             float = 20
-	y                             float = 20
-	xv, yv, v                     float
+	x                             gl.GLfloat = 20
+	y                             gl.GLfloat = 20
+	xv, yv, v                     gl.GLfloat
 	shield, joyShield             bool
 	cursor                        bool = true
 	lastTime                      int
@@ -34,7 +34,7 @@ var (
 
 type Bullet struct {
 	inuse           bool
-	x, y, v, xv, yv float
+	x, y, v, xv, yv gl.GLfloat
 	expire          int
 }
 
@@ -52,8 +52,8 @@ func allocBullet() int {
 }
 
 func initBullet(i, time int) {
-	c := float(math.Cos(float64(angle) * math.Pi / 180.0))
-	s := float(math.Sin(float64(angle) * math.Pi / 180.0))
+	c := gl.GLfloat(math.Cos(float64(angle) * math.Pi / 180.0))
+	s := gl.GLfloat(math.Sin(float64(angle) * math.Pi / 180.0))
 
 	bullet[i].inuse = true
 	bullet[i].x = x + 2*c
@@ -71,12 +71,12 @@ func advanceBullets(delta, time int) {
 				bullet[i].inuse = false
 				continue
 			}
-			x := bullet[i].x + bullet[i].xv*float(delta)
-			y := bullet[i].y + bullet[i].yv*float(delta)
+			x := bullet[i].x + bullet[i].xv*gl.GLfloat(delta)
+			y := bullet[i].y + bullet[i].yv*gl.GLfloat(delta)
 			x = x / 40.0
-			bullet[i].x = (x - float(math.Floor(float64(x)))) * 40.0
+			bullet[i].x = (x - gl.GLfloat(math.Floor(float64(x)))) * 40.0
 			y = y / 40.0
-			bullet[i].y = (y - float(math.Floor(float64(x)))) * 40.0
+			bullet[i].y = (y - gl.GLfloat(math.Floor(float64(x)))) * 40.0
 		}
 	}
 }
@@ -99,7 +99,7 @@ func drawBullets() {
 	gl.End()
 }
 
-func drawShip(angle float) {
+func drawShip(angle gl.GLfloat) {
 	gl.PushMatrix()
 	gl.Translatef(x, y, 0.0)
 	gl.Rotatef(angle, 0.0, 0.0, 1.0)
@@ -124,8 +124,8 @@ func drawShip(angle float) {
 		gl.Begin(gl.LINE_LOOP)
 		for rad := 0.0; rad < 12.0; rad += 1.0 {
 			gl.Vertex2f(
-				float(2.3*math.Cos(2*float64(rad)/math.Pi)+0.2),
-				float(2.0*math.Sin(2*float64(rad)/math.Pi)))
+				gl.GLfloat(2.3*math.Cos(2*float64(rad)/math.Pi)+0.2),
+				gl.GLfloat(2.0*math.Sin(2*float64(rad)/math.Pi)))
 		}
 		gl.End()
 	}
@@ -149,28 +149,28 @@ func idle() {
 	}
 	if left {
 		delta = time - leftTime
-		angle = angle + float(delta)*float(0.4)
+		angle = angle + gl.GLfloat(delta)*gl.GLfloat(0.4)
 		leftTime = time
 	}
 	if right {
 		delta = time - rightTime
-		angle = angle - float(delta)*float(0.4)
+		angle = angle - gl.GLfloat(delta)*gl.GLfloat(0.4)
 		rightTime = time
 	}
 	if thrust {
 		delta = time - thrustTime
-		v = float(delta) * 0.00004
-		xv = xv + float(math.Cos(float64(angle)*math.Pi/180.0))*v
-		yv = yv + float(math.Sin(float64(angle)*math.Pi/180.0))*v
+		v = gl.GLfloat(delta) * 0.00004
+		xv = xv + gl.GLfloat(math.Cos(float64(angle)*math.Pi/180.0))*v
+		yv = yv + gl.GLfloat(math.Sin(float64(angle)*math.Pi/180.0))*v
 		thrustTime = time
 	}
 	delta = time - lastTime
-	x = x + xv*float(delta)
-	y = y + yv*float(delta)
+	x = x + xv*gl.GLfloat(delta)
+	y = y + yv*gl.GLfloat(delta)
 	x = x / 40.0
-	x = (x - float(math.Floor(float64(x)))) * 40.0
+	x = (x - gl.GLfloat(math.Floor(float64(x)))) * 40.0
 	y = y / 40.0
-	y = (y - float(math.Floor(float64(y)))) * 40.0
+	y = (y - gl.GLfloat(math.Floor(float64(y)))) * 40.0
 	lastTime = time
 	advanceBullets(delta, time)
 	currentWindow.PostRedisplay()

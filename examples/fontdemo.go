@@ -12,14 +12,14 @@ import "gl"
 import "glu"
 import "glut"
 
-func bitmap_output(x, y float, str string, font glut.BitmapFont) {
+func bitmap_output(x, y gl.GLfloat, str string, font glut.BitmapFont) {
 	gl.RasterPos2f(x, y)
 	for _, ch := range str {
 		font.Character(ch)
 	}
 }
 
-func stroke_output(x, y float, str string, font glut.StrokeFont) {
+func stroke_output(x, y gl.GLfloat, str string, font glut.StrokeFont) {
 	gl.PushMatrix()
 	gl.Translatef(x, y, 0)
 	gl.Scalef(0.005, 0.005, 0.005)
@@ -61,12 +61,12 @@ func display() {
 }
 
 func reshape(w, h int) {
-	gl.Viewport(0, 0, w, h)
+	gl.Viewport(0, 0, gl.GLsizei(w), gl.GLsizei(h))
 	gl.MatrixMode(gl.PROJECTION)
 	gl.LoadIdentity()
-	gl.Ortho(0, float64(w), 0, float64(h), -1, 1)
+	gl.Ortho(0, gl.GLdouble(w), 0, gl.GLdouble(h), -1, 1)
 	gl.Scalef(1, -1, 1)
-	gl.Translatef(0, float(-h), 0)
+	gl.Translatef(0, gl.GLfloat(-h), 0)
 	gl.MatrixMode(gl.MODELVIEW)
 }
 

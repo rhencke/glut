@@ -1,0 +1,31 @@
+--- a/Makefile
++++ b/Makefile
+@@ -7,7 +7,6 @@ include $(GOROOT)/src/Make.inc
+ all:
+ 	make -C gl10 install
+ 	make -C glu install
+-	make -C examples
+ 
+ clean:
+ 	make -C gl10 clean
+diff --git a/gl10/gl.go b/gl10/gl.go
+index a42ae3e..7238619 100644
+--- a/gl10/gl.go
++++ b/gl10/gl.go
+@@ -1,15 +1,11 @@
+ package gl
+ 
++// # include <GL/glew.h>
+ // #ifdef __Darwin
+-// # include <OpenGL/glew.h>
+ // # include <OpenGL/gl.h>
+ // #else
+-// # include <GL/glew.h>
+ // # include <GL/gl.h>
+ // #endif
+-//
+-// GLenum glewInit(void);
+-//
+ import "C"
+ import "unsafe"
+ 

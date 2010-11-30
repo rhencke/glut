@@ -27,12 +27,12 @@ func reshape(w, h int) {
 	   wouldn't be required if you chose a (more typical in 3D) abstract
 	   coordinate system. */
 
-	gl.Viewport(0, 0, w, h)                       /* Establish viewing area to cover entire window. */
-	gl.MatrixMode(gl.PROJECTION)                  /* Start modifying the projection matrix. */
-	gl.LoadIdentity()                             /* Reset project matrix. */
-	gl.Ortho(0, float64(w), 0, float64(h), -1, 1) /* Map abstract coords directly to window coords. */
-	gl.Scalef(1, -1, 1)                           /* Invert Y axis so increasing Y goes down. */
-	gl.Translatef(0, float(-h), 0)                /* Shift origin up to upper-left corner. */
+	gl.Viewport(0, 0, gl.GLsizei(w), gl.GLsizei(h))       /* Establish viewing area to cover entire window. */
+	gl.MatrixMode(gl.PROJECTION)                          /* Start modifying the projection matrix. */
+	gl.LoadIdentity()                                     /* Reset project matrix. */
+	gl.Ortho(0, gl.GLdouble(w), 0, gl.GLdouble(h), -1, 1) /* Map abstract coords directly to window coords. */
+	gl.Scalef(1, -1, 1)                                   /* Invert Y axis so increasing Y goes down. */
+	gl.Translatef(0, gl.GLfloat(-h), 0)                   /* Shift origin up to upper-left corner. */
 }
 
 func display() {

@@ -2,8 +2,17 @@ Go bindings for GLUT : https://github.com/rhencke/Go-GLUT
 
 Requires: https://github.com/banthar/Go-OpenGL (for basic OpenGL data types)
 
-To install:
+If you are using Mac OS X, and are unable to install Go-OpenGL, please apply Go-OpenGL.patch:
+    patch -p1 -d your/path/to/Go-OpenGL < Go-OpenGL.patch
+    cd your/path/to/Go-OpenGL
+    make
+
+To install Go-GLUT:
     make install
+
+To compile examples:
+    cd examples
+    make
 
 Before calling any other function, call glut.Init()
 

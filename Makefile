@@ -15,7 +15,7 @@ ifeq ($(PLATFORM),Darwin)
 CGO_LDFLAGS:= _cgo_export.o -framework GLUT
 CGO_CFLAGS:=-D__Darwin
 else
-CGO_LDFLAGS:=-lGLUT _cgo_export.o 
+CGO_LDFLAGS:=-lglut _cgo_export.o 
 CGO_CFLAGS:=-D__$(PLATFORM)
 endif
 

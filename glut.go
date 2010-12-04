@@ -1,3 +1,6 @@
+// The glut package provides a platform-independent window system for OpenGL, through the system's native GLUT or freeglut library.
+// It also provides convenience functions for drawing teapots.
+
 package glut
 
 // #ifdef __Darwin
@@ -6,53 +9,7 @@ package glut
 // # include <GL/glut.h>
 // #endif
 // #include <stdlib.h>
-//
-// // DEFINE_FUNCS is needed because I'm unsure how to pass C function pointers in Go.
-// #define DEFINE_FUNCS(x, y, ...) \
-// extern void go_##y(__VA_ARGS__); \
-// void set##x##Func() { glut##x##Func(go_##y); } \
-// void clear##x##Func() { glut##x##Func(NULL); } \
-// 
-// DEFINE_FUNCS(Display, a)
-// DEFINE_FUNCS(OverlayDisplay, b)
-// DEFINE_FUNCS(Reshape, c, int width, int height)
-// DEFINE_FUNCS(Keyboard, d, unsigned char key, int x, int y)
-// DEFINE_FUNCS(Mouse, e, int button, int state, int x, int y)
-// DEFINE_FUNCS(Motion, f, int x, int y)
-// DEFINE_FUNCS(PassiveMotion, g, int x, int y)
-// DEFINE_FUNCS(Visibility, h, int state)
-// DEFINE_FUNCS(Entry, i, int state)
-// DEFINE_FUNCS(Special, j, int key, int x, int y)
-// DEFINE_FUNCS(SpaceballMotion, k, int x, int y, int z)
-// DEFINE_FUNCS(SpaceballRotate, l, int x, int y, int z)
-// DEFINE_FUNCS(SpaceballButton, m, int button, int state)
-// /* just in case you're on an SGI box.. :) */
-// DEFINE_FUNCS(ButtonBox, n, int button, int state)
-// DEFINE_FUNCS(Dials, o, int dial, int value)
-// DEFINE_FUNCS(TabletMotion, p, int x, int y)
-// DEFINE_FUNCS(TabletButton, q, int button, int state, int x, int y)
-// DEFINE_FUNCS(MenuStatus, r, int status, int x, int y)
-// DEFINE_FUNCS(Idle, s)
-// // timer's an odd duck - we ignore it for now.
-// extern void go_t(int value); // glutCreateMenu callback
-// int goCreateMenu() { return glutCreateMenu(go_t); }
-// int goCreateMenuWithoutCallback() { return glutCreateMenu(NULL); }
-// DEFINE_FUNCS(KeyboardUp, u, unsigned char key, int x, int y)
-// DEFINE_FUNCS(SpecialUp, v, int key, int x, int y)
-// extern void go_w(unsigned int buttonMask, int x, int y, int z); // glutJoystickFunc callback
-// void setJoystickFunc(int pollInterval) { glutJoystickFunc(go_w, pollInterval); }
-// void clearJoystickFunc(int pollInterval) { glutJoystickFunc(NULL, pollInterval); }
-//
-// #define DEFINE_FONT(x) void* go_##x() { return x; }
-// DEFINE_FONT(GLUT_STROKE_ROMAN)
-// DEFINE_FONT(GLUT_STROKE_MONO_ROMAN)
-// DEFINE_FONT(GLUT_BITMAP_9_BY_15)
-// DEFINE_FONT(GLUT_BITMAP_8_BY_13)
-// DEFINE_FONT(GLUT_BITMAP_TIMES_ROMAN_10)
-// DEFINE_FONT(GLUT_BITMAP_TIMES_ROMAN_24)
-// DEFINE_FONT(GLUT_BITMAP_HELVETICA_10)
-// DEFINE_FONT(GLUT_BITMAP_HELVETICA_12)
-// DEFINE_FONT(GLUT_BITMAP_HELVETICA_18)
+// #include "support.c"
 import "C"
 
 import "os"
@@ -65,33 +22,33 @@ type (
 	BitmapFont int
 	StrokeFont int
 	Menu       int
-
-	windowFuncs struct {
-		display         func()
-		overlayDisplay  func()
-		reshape         func(width, height int)
-		keyboard        func(key byte, x, y int)
-		mouse           func(button, state, x, y int)
-		motion          func(x, y int)
-		passiveMotion   func(x, y int)
-		visibility      func(state int)
-		entry           func(state int)
-		special         func(key, x, y int)
-		spaceballMotion func(x, y, z int)
-		spaceballRotate func(x, y, z int)
-		spaceballButton func(button, state int)
-		buttonBox       func(button, state int)
-		dials           func(dial, value int)
-		tabletMotion    func(x, y int)
-		tabletButton    func(button, state, x, y int)
-		menuStatus      func(status, x, y int)
-		idle            func()
-		windowStatus    func(state int)
-		keyboardUp      func(key byte, x, y int)
-		specialUp       func(key, x, y int)
-		joystick        func(buttonMask uint, x, y, z int)
-	}
 )
+
+type windowFuncs struct {
+	display         func()
+	overlayDisplay  func()
+	reshape         func(width, height int)
+	keyboard        func(key byte, x, y int)
+	mouse           func(button, state, x, y int)
+	motion          func(x, y int)
+	passiveMotion   func(x, y int)
+	visibility      func(state int)
+	entry           func(state int)
+	special         func(key, x, y int)
+	spaceballMotion func(x, y, z int)
+	spaceballRotate func(x, y, z int)
+	spaceballButton func(button, state int)
+	buttonBox       func(button, state int)
+	dials           func(dial, value int)
+	tabletMotion    func(x, y int)
+	tabletButton    func(button, state, x, y int)
+	menuStatus      func(status, x, y int)
+	idle            func()
+	windowStatus    func(state int)
+	keyboardUp      func(key byte, x, y int)
+	specialUp       func(key, x, y int)
+	joystick        func(buttonMask uint, x, y, z int)
+}
 
 const (
 	RGB         = C.GLUT_RGB
@@ -288,11 +245,13 @@ const (
 )
 
 var (
-	idleFunc   func()
-	winFuncs   = make(map[Window]*windowFuncs)
-	menuFuncs  = make(map[Menu]func(value int))
-	gameWindow *Window
+	idleFunc  func()
+	winFuncs  = make(map[Window]*windowFuncs)
+	menuFuncs = make(map[Menu]func(value int))
 )
+
+var gameWindow *Window
+
 
 // - Initialization
 
@@ -983,8 +942,7 @@ func GameModeGet(mode gl.GLenum) int {
 
 // - Callbacks
 
-// cgo does not allow callbacks to arbitrary functions, so we must handle this 
-// ourselves.  The alphabetical export names work around a cgo bug on Mac OS X.
+// The alphabetical export names work around a cgo bug on Mac OS X.
 
 //export go_a
 func internalDisplayFunc() {

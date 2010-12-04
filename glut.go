@@ -18,10 +18,10 @@ import "unsafe"
 import "gl"
 
 type (
-	Window     int
-	BitmapFont int
-	StrokeFont int
-	Menu       int
+	Window     C.int
+	BitmapFont C.int
+	StrokeFont C.int
+	Menu       C.int
 )
 
 type windowFuncs struct {

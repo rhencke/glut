@@ -1,11 +1,15 @@
-Go bindings for GLUT : https://github.com/rhencke/Go-GLUT
+Go bindings for GLUT: https://github.com/rhencke/Go-GLUT
 
-Requires: https://github.com/banthar/Go-OpenGL (for basic OpenGL data types)
+Requires: https://github.com/banthar/Go-OpenGL
+
+Please note that Go-OpenGL does NOT require SDL; only its examples do.
 
 If you are using Mac OS X, and are unable to install Go-OpenGL, please apply Go-OpenGL.patch:
     patch -p1 -d your/path/to/Go-OpenGL < Go-OpenGL.patch
     cd your/path/to/Go-OpenGL
     make
+
+If you are using Linux, please ensure you have installed GLUT or freeglut.
 
 To install Go-GLUT:
     make install
@@ -13,7 +17,3 @@ To install Go-GLUT:
 To compile examples:
     cd examples
     make
-
-Before calling any other function, call glut.Init()
-
-Tested on Mac OS X... if you have problems on another platform, please let me know (sorry)

@@ -17,3 +17,10 @@ To install Go-GLUT:
 To compile examples:
     cd examples
     make
+
+Known problems:
+    Calling a variadic function (e.g. fmt.Printf) from inside a GLUT callback will break your program.
+    http://code.google.com/p/go/issues/detail?id=1323
+    
+    Some GLUT functionality (notably, entering game mode on Mac OS X) may cause your program to crash.
+    http://code.google.com/p/go/issues/detail?id=1328

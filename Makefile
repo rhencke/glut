@@ -6,16 +6,13 @@ include $(GOROOT)/src/Make.inc
 
 TARG=glut
 
-CGOFILES:=glut.go
+CGOFILES=\
+	glut.go\
 
-PLATFORM:=$(shell uname -s)
-
-CGO_CFLAGS:=-D__$(PLATFORM)
-
-ifeq ($(PLATFORM),Darwin)
-CGO_LDFLAGS:=-framework GLUT
+ifeq ($(GOOS),darwin)
+CGO_LDFLAGS=-framework GLUT
 else
-CGO_LDFLAGS:=-lglut
+CGO_LDFLAGS=-lglut
 endif
 
 include $(GOROOT)/src/Make.pkg

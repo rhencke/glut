@@ -1,31 +1,84 @@
---- a/Makefile
-+++ b/Makefile
-@@ -7,7 +7,6 @@ include $(GOROOT)/src/Make.inc
- all:
- 	make -C gl10 install
- 	make -C glu install
--	make -C examples
+diff --git a/gl10/Makefile b/gl10/Makefile
+index d2f886d..8e6fe1a 100644
+--- a/gl10/Makefile
++++ b/gl10/Makefile
+@@ -13,8 +13,8 @@ CGOFILES:=gl.go
+ PLATFORM:=$(shell uname -s)
  
- clean:
- 	make -C gl10 clean
+ ifeq ($(PLATFORM),Darwin)
+-CGO_LDFLAGS:=-framework OpenGL -lGL
+-CGO_CFLAGS:=-D__Darwin -framework OpenGL
++CGO_LDFLAGS:=-framework OpenGL
++CGO_CFLAGS:=-D__Darwin
+ else
+ CGO_LDFLAGS:=-lGL
+ CGO_CFLAGS:=-D__$(PLATFORM)
 diff --git a/gl10/gl.go b/gl10/gl.go
-index a42ae3e..7238619 100644
+index c6ffb18..5b59fa9 100644
 --- a/gl10/gl.go
 +++ b/gl10/gl.go
-@@ -1,15 +1,11 @@
- package gl
+@@ -984,19 +984,19 @@ func PassThrough(token GLfloat) {
+ 	C.glPassThrough(C.GLfloat(token))
+ }
  
-+// # include <GL/glew.h>
- // #ifdef __Darwin
--// # include <OpenGL/glew.h>
- // # include <OpenGL/gl.h>
- // #else
--// # include <GL/glew.h>
- // # include <GL/gl.h>
- // #endif
--//
--// GLenum glewInit(void);
--//
- import "C"
- import "unsafe"
+-//void glPixelMapfv (GLenum map, GLsizei mapsize, const GLfloat *values)
+-func PixelMapfv(map_ GLenum, mapsize GLsizei, values *GLfloat) {
+-	C.glPixelMapfv(C.GLenum(map_), C.GLsizei(mapsize), (*C.GLfloat)(values))
++//void glPixelMapfv (GLenum map, GLint mapsize, const GLfloat *values)
++func PixelMapfv(map_ GLenum, mapsize GLint, values *GLfloat) {
++	C.glPixelMapfv(C.GLenum(map_), C.GLint(mapsize), (*C.GLfloat)(values))
+ }
  
+-//void glPixelMapuiv (GLenum map, GLsizei mapsize, const GLuint *values)
+-func PixelMapuiv(map_ GLenum, mapsize GLsizei, values *GLuint) {
+-	C.glPixelMapuiv(C.GLenum(map_), C.GLsizei(mapsize), (*C.GLuint)(values))
++//void glPixelMapuiv (GLenum map, GLint mapsize, const GLuint *values)
++func PixelMapuiv(map_ GLenum, mapsize GLint, values *GLuint) {
++	C.glPixelMapuiv(C.GLenum(map_), C.GLint(mapsize), (*C.GLuint)(values))
+ }
+ 
+-//void glPixelMapusv (GLenum map, GLsizei mapsize, const GLushort *values)
+-func PixelMapusv(map_ GLenum, mapsize GLsizei, values *GLushort) {
+-	C.glPixelMapusv(C.GLenum(map_), C.GLsizei(mapsize), (*C.GLushort)(values))
++//void glPixelMapusv (GLenum map, GLint mapsize, const GLushort *values)
++func PixelMapusv(map_ GLenum, mapsize GLint, values *GLushort) {
++	C.glPixelMapusv(C.GLenum(map_), C.GLint(mapsize), (*C.GLushort)(values))
+ }
+ 
+ //void glPixelStoref (GLenum pname, GLfloat param)
+@@ -1529,14 +1529,14 @@ func TexGeniv(coord GLenum, pname GLenum, params *GLint) {
+ 	C.glTexGeniv(C.GLenum(coord), C.GLenum(pname), (*C.GLint)(params))
+ }
+ 
+-//void glTexImage1D (GLenum target, GLint level, GLint internalformat, GLsizei width, GLint border, GLenum format, GLenum type, const GLvoid *pixels)
+-func TexImage1D(target GLenum, level GLint, internalformat GLint, width GLsizei, border GLint, format GLenum, type_ GLenum, pixels unsafe.Pointer) {
+-	C.glTexImage1D(C.GLenum(target), C.GLint(level), C.GLint(internalformat), C.GLsizei(width), C.GLint(border), C.GLenum(format), C.GLenum(type_), pixels)
++//void glTexImage1D (GLenum target, GLint level, GLenum internalformat, GLsizei width, GLint border, GLenum format, GLenum type, const GLvoid *pixels)
++func TexImage1D(target GLenum, level GLint, internalformat GLenum, width GLsizei, border GLint, format GLenum, type_ GLenum, pixels unsafe.Pointer) {
++	C.glTexImage1D(C.GLenum(target), C.GLint(level), C.GLenum(internalformat), C.GLsizei(width), C.GLint(border), C.GLenum(format), C.GLenum(type_), pixels)
+ }
+ 
+-//void glTexImage2D (GLenum target, GLint level, GLint internalformat, GLsizei width, GLsizei height, GLint border, GLenum format, GLenum type, const GLvoid *pixels)
+-func TexImage2D(target GLenum, level GLint, internalformat GLint, width GLsizei, height GLsizei, border GLint, format GLenum, type_ GLenum, pixels unsafe.Pointer) {
+-	C.glTexImage2D(C.GLenum(target), C.GLint(level), C.GLint(internalformat), C.GLsizei(width), C.GLsizei(height), C.GLint(border), C.GLenum(format), C.GLenum(type_), pixels)
++//void glTexImage2D (GLenum target, GLint level, GLenum internalformat, GLsizei width, GLsizei height, GLint border, GLenum format, GLenum type, const GLvoid *pixels)
++func TexImage2D(target GLenum, level GLint, internalformat GLenum, width GLsizei, height GLsizei, border GLint, format GLenum, type_ GLenum, pixels unsafe.Pointer) {
++	C.glTexImage2D(C.GLenum(target), C.GLint(level), C.GLenum(internalformat), C.GLsizei(width), C.GLsizei(height), C.GLint(border), C.GLenum(format), C.GLenum(type_), pixels)
+ }
+ 
+ //void glTexParameterf (GLenum target, GLenum pname, GLfloat param)
+diff --git a/glu-gl10/Makefile b/glu-gl10/Makefile
+index 55ba10c..6a1a45f 100644
+--- a/glu-gl10/Makefile
++++ b/glu-gl10/Makefile
+@@ -11,8 +11,8 @@ CGOFILES:=glu.go
+ PLATFORM:=$(shell uname -s)
+ 
+ ifeq ($(PLATFORM),Darwin)
+-CGO_LDFLAGS:=-framework OpenGL -lGLU
+-CGO_CFLAGS:=-D__Darwin -framework OpenGL
++CGO_LDFLAGS:=-framework OpenGL
++CGO_CFLAGS:=-D__Darwin
+ else
+ CGO_LDFLAGS:=-lGLU
+ CGO_CFLAGS:=-D__$(PLATFORM)

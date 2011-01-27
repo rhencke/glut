@@ -9,17 +9,17 @@
 package main
 
 import "gl"
-import "glu"
+import "gl/glu"
 import "glut"
 
-func bitmap_output(x, y gl.GLfloat, str string, font glut.BitmapFont) {
+func bitmap_output(x, y float32, str string, font glut.BitmapFont) {
 	gl.RasterPos2f(x, y)
 	for _, ch := range str {
 		font.Character(ch)
 	}
 }
 
-func stroke_output(x, y gl.GLfloat, str string, font glut.StrokeFont) {
+func stroke_output(x, y float32, str string, font glut.StrokeFont) {
 	gl.PushMatrix()
 	gl.Translatef(x, y, 0)
 	gl.Scalef(0.005, 0.005, 0.005)
@@ -41,10 +41,9 @@ func display() {
 	glu.Perspective(40.0, 1.0, 0.1, 20.0)
 	gl.MatrixMode(gl.MODELVIEW)
 	gl.PushMatrix()
-	// Banthar's glu doesn't have this right now.
-	// glu.LookAt(0.0, 0.0, 4.0, /* eye is at (0,0,30) */
-	// 	0.0, 0.0, 0.0, /* center is at (0,0,0) */
-	// 	0.0, 1.0, 0.) /* up is in postivie Y direction */
+	glu.LookAt(0.0, 0.0, 4.0, /* eye is at (0,0,30) */
+		0.0, 0.0, 0.0, /* center is at (0,0,0) */
+		0.0, 1.0, 0.0) /* up is in postivie Y direction */
 	gl.PushMatrix()
 	gl.Translatef(0, 0, -4)
 	gl.Rotatef(50, 0, 1, 0)
@@ -61,12 +60,12 @@ func display() {
 }
 
 func reshape(w, h int) {
-	gl.Viewport(0, 0, gl.GLsizei(w), gl.GLsizei(h))
+	gl.Viewport(0, 0, w, h)
 	gl.MatrixMode(gl.PROJECTION)
 	gl.LoadIdentity()
-	gl.Ortho(0, gl.GLdouble(w), 0, gl.GLdouble(h), -1, 1)
+	gl.Ortho(0, float64(w), 0, float64(h), -1, 1)
 	gl.Scalef(1, -1, 1)
-	gl.Translatef(0, gl.GLfloat(-h), 0)
+	gl.Translatef(0, float32(-h), 0)
 	gl.MatrixMode(gl.MODELVIEW)
 }
 

@@ -2,10 +2,9 @@ Go bindings for GLUT: https://github.com/rhencke/Go-GLUT
 
 Requires: https://github.com/banthar/Go-OpenGL
 
-If you are using Mac OS X, and are unable to install Go-OpenGL, please apply Go-OpenGL.patch:
-    patch -p1 -d your/path/to/Go-OpenGL < Go-OpenGL.patch
-    cd your/path/to/Go-OpenGL
+When installing Go-OpenGL, please use:
     make install
+(just make will attempt to compile the Go-OpenGL examples, which require SDL)
 
 If you are using Linux, please ensure you have installed GLUT or freeglut.
 

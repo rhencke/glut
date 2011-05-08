@@ -3,17 +3,17 @@ Go bindings for GLUT: https://github.com/rhencke/Go-GLUT
 Requires: https://github.com/banthar/Go-OpenGL
 
 When installing Go-OpenGL, please use:
-    make install
-(just make will attempt to compile the Go-OpenGL examples, which require SDL)
+    gomake install
+(just gomake will attempt to compile the Go-OpenGL examples, which require SDL)
 
 If you are using Linux, please ensure you have installed GLUT or freeglut.
 
 To install Go-GLUT:
-    make install
+    gomake install
 
 To compile examples:
     cd examples
-    make
+    gomake
 
 Known problems:
     Some GLUT functionality (notably, entering game mode on Mac OS X) may cause your program to crash.

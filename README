@@ -1,6 +1,6 @@
 Go bindings for GLUT: https://github.com/rhencke/Go-GLUT
 
-Requires: https://github.com/banthar/Go-OpenGL
+Requires: https://github.com/banthar/gl
 
 When installing Go-OpenGL, please use:
     gomake install

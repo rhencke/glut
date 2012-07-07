@@ -4,11 +4,11 @@
 # include <GL/glut.h>
 #endif
 #include <stdlib.h>
+#include "_cgo_export.h"
 
 // DEFINE_FUNCS is needed because I'm unsure how to pass C function pointers in Go.
 #define DEFINE_FUNCS(x, ...) \
-extern void internal##x##Func(__VA_ARGS__); \
-void set##x##Func() { glut##x##Func(internal##x##Func); } \
+void set##x##Func() { glut##x##Func(Internal##x##Func); } \
 void clear##x##Func() { glut##x##Func(0); } \
 
 DEFINE_FUNCS(Display)
@@ -35,13 +35,11 @@ DEFINE_FUNCS(KeyboardUp, unsigned char key, int x, int y)
 DEFINE_FUNCS(SpecialUp, int key, int x, int y)
 
 // glutCreateMenu callback
-extern void internalMenuFunc(int value);
-int goCreateMenu() { return glutCreateMenu(internalMenuFunc); }
+int goCreateMenu() { return glutCreateMenu(InternalMenuFunc); }
 int goCreateMenuWithoutCallback() { return glutCreateMenu(0); }
 
 // glutJoystickFunc callback
-extern void internalJoystickFunc(unsigned int buttonMask, int x, int y, int z);
-void setJoystickFunc(int pollInterval) { glutJoystickFunc(internalJoystickFunc, pollInterval); }
+void setJoystickFunc(int pollInterval) { glutJoystickFunc(InternalJoystickFunc, pollInterval); }
 void clearJoystickFunc(int pollInterval) { glutJoystickFunc(0, pollInterval); }
 
 // cgo does not correctly interpret the GLUT font constants, so we try a different approach.

@@ -357,7 +357,6 @@ func initWindow() {
 }
 
 func main() {
-	glut.Init()
 	glut.InitDisplayMode(glut.DOUBLE | glut.RGB)
 
 	// FIXME: gamemode causes crash

@@ -51,7 +51,6 @@ func display() {
 }
 
 func main() {
-	glut.Init()
 	glut.CreateWindow("single triangle")
 	glut.DisplayFunc(display)
 	glut.ReshapeFunc(reshape)

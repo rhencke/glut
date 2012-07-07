@@ -5,6 +5,7 @@ package glut
 
 import (
 	"os"
+	"runtime"
 	"unsafe"
 
 	"github.com/banthar/gl"
@@ -259,7 +260,9 @@ var gameWindow *Window
 
 // - Initialization
 
-func Init() {
+func init() {
+	runtime.LockOSThread()
+
 	argc := C.int(len(os.Args))
 	argv := make([]*C.char, argc)
 	for i, arg := range os.Args {
@@ -946,117 +949,117 @@ func GameModeGet(mode gl.GLenum) int {
 
 // - Callbacks
 
-//export internalDisplayFunc
-func internalDisplayFunc() {
-	winFuncs[GetWindow()].display()
-}
-
-//export internalOverlayDisplayFunc
-func internalOverlayDisplayFunc() {
-	winFuncs[GetWindow()].overlayDisplay()
-}
-
-//export internalReshapeFunc
-func internalReshapeFunc(width, height int) {
-	winFuncs[GetWindow()].reshape(width, height)
-}
-
-//export internalKeyboardFunc
-func internalKeyboardFunc(key uint8, x, y int) {
-	winFuncs[GetWindow()].keyboard(key, x, y)
-}
-
-//export internalMouseFunc
-func internalMouseFunc(button, state, x, y int) {
-	winFuncs[GetWindow()].mouse(button, state, x, y)
-}
-
-//export internalMotionFunc
-func internalMotionFunc(x, y int) {
-	winFuncs[GetWindow()].motion(x, y)
-}
-
-//export internalPassiveMotionFunc
-func internalPassiveMotionFunc(x, y int) {
-	winFuncs[GetWindow()].passiveMotion(x, y)
-}
-
-//export internalVisibilityFunc
-func internalVisibilityFunc(state int) {
-	winFuncs[GetWindow()].visibility(state)
-}
-
-//export internalEntryFunc
-func internalEntryFunc(state int) {
-	winFuncs[GetWindow()].entry(state)
-}
-
-//export internalSpecialFunc
-func internalSpecialFunc(key, x, y int) {
-	winFuncs[GetWindow()].special(key, x, y)
-}
-
-//export internalSpaceballMotionFunc
-func internalSpaceballMotionFunc(x, y, z int) {
-	winFuncs[GetWindow()].spaceballMotion(x, y, z)
-}
-
-//export internalSpaceballRotateFunc
-func internalSpaceballRotateFunc(x, y, z int) {
-	winFuncs[GetWindow()].spaceballRotate(x, y, z)
-}
-
-//export internalSpaceballButtonFunc
-func internalSpaceballButtonFunc(button, state int) {
-	winFuncs[GetWindow()].spaceballButton(button, state)
-}
-
-//export internalButtonBoxFunc
-func internalButtonBoxFunc(button, state int) {
+//export InternalButtonBoxFunc
+func InternalButtonBoxFunc(button, state int) {
 	winFuncs[GetWindow()].buttonBox(button, state)
 }
 
-//export internalDialsFunc
-func internalDialsFunc(dial, value int) {
+//export InternalDialsFunc
+func InternalDialsFunc(dial, value int) {
 	winFuncs[GetWindow()].dials(dial, value)
 }
 
-//export internalTabletMotionFunc
-func internalTabletMotionFunc(x, y int) {
-	winFuncs[GetWindow()].tabletMotion(x, y)
+//export InternalDisplayFunc
+func InternalDisplayFunc() {
+	winFuncs[GetWindow()].display()
 }
 
-//export internalTabletButtonFunc
-func internalTabletButtonFunc(button, state, x, y int) {
-	winFuncs[GetWindow()].tabletButton(button, state, x, y)
+//export InternalEntryFunc
+func InternalEntryFunc(state int) {
+	winFuncs[GetWindow()].entry(state)
 }
 
-//export internalMenuStatusFunc
-func internalMenuStatusFunc(status, x, y int) {
-	winFuncs[GetWindow()].menuStatus(status, x, y)
-}
-
-//export internalIdleFunc
-func internalIdleFunc() {
+//export InternalIdleFunc
+func InternalIdleFunc() {
 	idleFunc()
 }
 
-//export internalMenuFunc
-func internalMenuFunc(state int) {
-	menuFuncs[GetMenu()](state)
+//export InternalJoystickFunc
+func InternalJoystickFunc(buttonMask uint, x, y, z int) {
+	winFuncs[GetWindow()].joystick(buttonMask, x, y, z)
 }
 
-//export internalKeyboardUpFunc
-func internalKeyboardUpFunc(key uint8, x, y int) {
+//export InternalKeyboardFunc
+func InternalKeyboardFunc(key uint8, x, y int) {
+	winFuncs[GetWindow()].keyboard(key, x, y)
+}
+
+//export InternalKeyboardUpFunc
+func InternalKeyboardUpFunc(key uint8, x, y int) {
 	winFuncs[GetWindow()].keyboardUp(key, x, y)
 }
 
-//export internalSpecialUpFunc
-func internalSpecialUpFunc(key, x, y int) {
+//export InternalMenuFunc
+func InternalMenuFunc(state int) {
+	menuFuncs[GetMenu()](state)
+}
+
+//export InternalMenuStatusFunc
+func InternalMenuStatusFunc(status, x, y int) {
+	winFuncs[GetWindow()].menuStatus(status, x, y)
+}
+
+//export InternalMotionFunc
+func InternalMotionFunc(x, y int) {
+	winFuncs[GetWindow()].motion(x, y)
+}
+
+//export InternalMouseFunc
+func InternalMouseFunc(button, state, x, y int) {
+	winFuncs[GetWindow()].mouse(button, state, x, y)
+}
+
+//export InternalOverlayDisplayFunc
+func InternalOverlayDisplayFunc() {
+	winFuncs[GetWindow()].overlayDisplay()
+}
+
+//export InternalPassiveMotionFunc
+func InternalPassiveMotionFunc(x, y int) {
+	winFuncs[GetWindow()].passiveMotion(x, y)
+}
+
+//export InternalReshapeFunc
+func InternalReshapeFunc(width, height int) {
+	winFuncs[GetWindow()].reshape(width, height)
+}
+
+//export InternalSpaceballButtonFunc
+func InternalSpaceballButtonFunc(button, state int) {
+	winFuncs[GetWindow()].spaceballButton(button, state)
+}
+
+//export InternalSpaceballMotionFunc
+func InternalSpaceballMotionFunc(x, y, z int) {
+	winFuncs[GetWindow()].spaceballMotion(x, y, z)
+}
+
+//export InternalSpaceballRotateFunc
+func InternalSpaceballRotateFunc(x, y, z int) {
+	winFuncs[GetWindow()].spaceballRotate(x, y, z)
+}
+
+//export InternalSpecialFunc
+func InternalSpecialFunc(key, x, y int) {
+	winFuncs[GetWindow()].special(key, x, y)
+}
+
+//export InternalSpecialUpFunc
+func InternalSpecialUpFunc(key, x, y int) {
 	winFuncs[GetWindow()].specialUp(key, x, y)
 }
 
-//export internalJoystickFunc
-func internalJoystickFunc(buttonMask uint, x, y, z int) {
-	winFuncs[GetWindow()].joystick(buttonMask, x, y, z)
+//export InternalTabletButtonFunc
+func InternalTabletButtonFunc(button, state, x, y int) {
+	winFuncs[GetWindow()].tabletButton(button, state, x, y)
+}
+
+//export InternalTabletMotionFunc
+func InternalTabletMotionFunc(x, y int) {
+	winFuncs[GetWindow()].tabletMotion(x, y)
+}
+
+//export InternalVisibilityFunc
+func InternalVisibilityFunc(state int) {
+	winFuncs[GetWindow()].visibility(state)
 }

@@ -72,7 +72,6 @@ func reshape(w, h int) {
 }
 
 func main() {
-	glut.Init()
 	glut.InitDisplayMode(glut.SINGLE | glut.RGB)
 	glut.InitWindowSize(465, 250)
 	glut.CreateWindow("GLUT bitmap & stroke font example")

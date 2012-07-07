@@ -8,9 +8,11 @@
 
 package main
 
-import "gl"
-import "gl/glu"
-import "glut"
+import (
+	"github.com/banthar/gl"
+	"github.com/banthar/gl/glu"
+	"github.com/rhencke/glut"
+)
 
 func bitmap_output(x, y float32, str string, font glut.BitmapFont) {
 	gl.RasterPos2f(x, y)
@@ -68,7 +70,6 @@ func reshape(w, h int) {
 	gl.Translatef(0, float32(-h), 0)
 	gl.MatrixMode(gl.MODELVIEW)
 }
-
 
 func main() {
 	glut.Init()

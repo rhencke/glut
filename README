@@ -1,20 +1,11 @@
-Go bindings for GLUT: https://github.com/rhencke/Go-GLUT
-
-Requires: https://github.com/banthar/gl
-
-When installing Go-OpenGL, please use:
-    gomake install
-(just gomake will attempt to compile the Go-OpenGL examples, which require SDL)
+Go bindings for GLUT: https://github.com/rhencke/glut
 
 If you are using Linux, please ensure you have installed GLUT or freeglut.
 
-To install Go-GLUT:
-    gomake install
+To install:
+    go get github.com/rhencke/glut
 
-To compile examples:
-    cd examples
-    gomake
-
-Known problems:
-    Some GLUT functionality (notably, entering game mode on Mac OS X) may cause your program to crash.
-    http://code.google.com/p/go/issues/detail?id=1328
+To run the examples:
+    go run examples/asteroids.go
+    go run examples/fontdemo.go
+    go run examples/simple.go

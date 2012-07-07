@@ -8,11 +8,13 @@
 
 package main
 
-import "math"
-import "os"
+import (
+	"math"
+	"os"
 
-import "gl"
-import "glut"
+	"github.com/banthar/gl"
+	"github.com/rhencke/glut"
+)
 
 var (
 	angle                         float32

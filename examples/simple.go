@@ -17,8 +17,10 @@
 
 package main
 
-import "gl"
-import "glut"
+import (
+	"github.com/banthar/gl"
+	"github.com/rhencke/glut"
+)
 
 func reshape(w, h int) {
 	/* Because Gil specified "screen coordinates" (presumably with an

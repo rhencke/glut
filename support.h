@@ -1,15 +1,7 @@
-#ifdef __APPLE__
-# include <GLUT/glut.h>
-#else
-# include <GL/glut.h>
-#endif
-#include <stdlib.h>
-
 // DEFINE_FUNCS is needed because I'm unsure how to pass C function pointers in Go.
 #define DEFINE_FUNCS(x, ...) \
-extern void internal##x##Func(__VA_ARGS__); \
-void set##x##Func() { glut##x##Func(internal##x##Func); } \
-void clear##x##Func() { glut##x##Func(0); } \
+extern void set##x##Func(); \
+extern void clear##x##Func();
 
 DEFINE_FUNCS(Display)
 DEFINE_FUNCS(OverlayDisplay)
@@ -35,17 +27,15 @@ DEFINE_FUNCS(KeyboardUp, unsigned char key, int x, int y)
 DEFINE_FUNCS(SpecialUp, int key, int x, int y)
 
 // glutCreateMenu callback
-extern void internalMenuFunc(int value);
-int goCreateMenu() { return glutCreateMenu(internalMenuFunc); }
-int goCreateMenuWithoutCallback() { return glutCreateMenu(0); }
+extern int goCreateMenu();
+extern int goCreateMenuWithoutCallback();
 
 // glutJoystickFunc callback
-extern void internalJoystickFunc(unsigned int buttonMask, int x, int y, int z);
-void setJoystickFunc(int pollInterval) { glutJoystickFunc(internalJoystickFunc, pollInterval); }
-void clearJoystickFunc(int pollInterval) { glutJoystickFunc(0, pollInterval); }
+extern void setJoystickFunc(int pollInterval);
+extern void clearJoystickFunc(int pollInterval);
 
 // cgo does not correctly interpret the GLUT font constants, so we try a different approach.
-#define DEFINE_FONT(x) void* go_##x() { return x; }
+#define DEFINE_FONT(x) extern void* go_##x();
 
 DEFINE_FONT(GLUT_STROKE_MONO_ROMAN)
 DEFINE_FONT(GLUT_STROKE_ROMAN)

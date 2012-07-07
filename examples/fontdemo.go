@@ -10,7 +10,7 @@ package main
 
 import (
 	"github.com/banthar/gl"
-	"github.com/banthar/gl/glu"
+	"github.com/banthar/glu"
 	"github.com/rhencke/glut"
 )
 

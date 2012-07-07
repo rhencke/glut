@@ -766,11 +766,11 @@ func fontaddr(f int) unsafe.Pointer {
 	panic("unknown font")
 }
 
-func (b BitmapFont) Character(character int) {
+func (b BitmapFont) Character(character rune) {
 	C.glutBitmapCharacter(fontaddr(int(b)), C.int(character))
 }
 
-func (b BitmapFont) Width(character int) int {
+func (b BitmapFont) Width(character rune) int {
 	return int(C.glutBitmapWidth(fontaddr(int(b)), C.int(character)))
 }
 
@@ -781,11 +781,11 @@ func (b BitmapFont) Length(str string) int {
 	return int(strlen)
 }
 
-func (s StrokeFont) Character(character int) {
+func (s StrokeFont) Character(character rune) {
 	C.glutStrokeCharacter(fontaddr(int(s)), C.int(character))
 }
 
-func (s StrokeFont) Width(character int) int {
+func (s StrokeFont) Width(character rune) int {
 	return int(C.glutStrokeWidth(fontaddr(int(s)), C.int(character)))
 }
 

@@ -3,7 +3,7 @@ Go bindings for GLUT: https://github.com/rhencke/glut
 If you are using Linux, please ensure you have installed GLUT or freeglut.
 
 To install:
-    go get github.com/rhencke/glut
+    go get -u github.com/rhencke/glut
 
 To run the examples:
     go run examples/asteroids.go

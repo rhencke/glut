@@ -8,7 +8,7 @@
 
 // DEFINE_FUNCS is needed because I'm unsure how to pass C function pointers in Go.
 #define DEFINE_FUNCS(x, ...) \
-void set##x##Func() { glut##x##Func(Internal##x##Func); } \
+void set##x##Func() { glut##x##Func(internal##x##Func); } \
 void clear##x##Func() { glut##x##Func(0); } \
 
 DEFINE_FUNCS(Display)

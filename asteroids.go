@@ -194,23 +194,19 @@ func key(key byte, px, py int) {
 	switch key {
 	case 27:
 		os.Exit(0)
-	case 'A':
-	case 'a':
+	case 'A', 'a':
 		thrust = true
 		thrustTime = glut.Get(glut.ELAPSED_TIME)
-	case 'S':
-	case 's':
+	case 'S', 's':
 		shield = true
-	case 'C':
-	case 'c':
+	case 'C', 'c':
 		cursor = !cursor
 		if cursor {
 			glut.SetCursor(glut.CURSOR_INHERIT)
 		} else {
 			glut.SetCursor(glut.CURSOR_NONE)
 		}
-	case 'z':
-	case 'Z':
+	case 'Z', 'z':
 		x = 20
 		y = 20
 		xv = 0
@@ -228,8 +224,7 @@ func key(key byte, px, py int) {
 			glut.LeaveGameMode()
 			currentWindow = originalWindow
 		}
-	case 'P':
-	case 'p':
+	case 'P', 'p':
 		paused = !paused
 		if paused {
 			glut.IdleFunc(nil)
@@ -237,20 +232,16 @@ func key(key byte, px, py int) {
 			glut.IdleFunc(idle)
 			resuming = true
 		}
-	case 'Q':
-	case 'q':
-	case ' ':
+	case 'Q', 'q', ' ':
 		shotBullet()
 	}
 }
 
 func keyup(key byte, x, y int) {
 	switch key {
-	case 'A':
-	case 'a':
+	case 'A', 'a':
 		thrust = false
-	case 'S':
-	case 's':
+	case 'S', 's':
 		shield = false
 	}
 }

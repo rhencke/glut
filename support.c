@@ -35,11 +35,11 @@ DEFINE_FUNCS(KeyboardUp, unsigned char key, int x, int y)
 DEFINE_FUNCS(SpecialUp, int key, int x, int y)
 
 // glutCreateMenu callback
-int goCreateMenu() { return glutCreateMenu(InternalMenuFunc); }
+int goCreateMenu() { return glutCreateMenu(internalMenuFunc); }
 int goCreateMenuWithoutCallback() { return glutCreateMenu(0); }
 
 // glutJoystickFunc callback
-void setJoystickFunc(int pollInterval) { glutJoystickFunc(InternalJoystickFunc, pollInterval); }
+void setJoystickFunc(int pollInterval) { glutJoystickFunc(internalJoystickFunc, pollInterval); }
 void clearJoystickFunc(int pollInterval) { glutJoystickFunc(0, pollInterval); }
 
 // cgo does not correctly interpret the GLUT font constants, so we try a different approach.

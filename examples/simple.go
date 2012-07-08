@@ -15,6 +15,8 @@
    program is; Gil has used Direct3D and his guess is "about 3000
    lines of code". */
 
+// +build ignore
+
 package main
 
 import (

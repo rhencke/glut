@@ -12,7 +12,7 @@ import (
 )
 
 // #cgo darwin  LDFLAGS: -framework GLUT
-// #cgo linux   LDFLAGS: -lGLUT
+// #cgo linux   LDFLAGS: -lglut
 // #cgo windows LDFLAGS: -lglut32
 // #ifdef __APPLE__
 // # include <GLUT/glut.h>

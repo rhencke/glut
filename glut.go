@@ -8,7 +8,7 @@ import (
 	"runtime"
 	"unsafe"
 
-	"github.com/banthar/gl"
+	"github.com/go-gl/gl"
 )
 
 // #cgo darwin  LDFLAGS: -framework GLUT

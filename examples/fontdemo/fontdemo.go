@@ -2,8 +2,8 @@
 
 /* Copyright (c) Mark J. Kilgard, 1994. */
 
-/* This program is freely distributable without licensing fees 
-   and is provided without guarantee or warrantee expressed or 
+/* This program is freely distributable without licensing fees
+   and is provided without guarantee or warrantee expressed or
    implied. This program is -not- in the public domain. */
 
 // +build ignore
@@ -11,8 +11,8 @@
 package main
 
 import (
-	"github.com/banthar/gl"
-	"github.com/banthar/glu"
+	"github.com/go-gl/gl"
+	"github.com/go-gl/glu"
 	"github.com/rhencke/glut"
 )
 

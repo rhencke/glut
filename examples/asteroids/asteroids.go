@@ -14,7 +14,7 @@ import (
 	"math"
 	"os"
 
-	"github.com/banthar/gl"
+	"github.com/go-gl/gl"
 	"github.com/rhencke/glut"
 )
 

@@ -36,7 +36,7 @@ type windowFuncs struct {
 	reshape         func(width, height int)
 	keyboard        func(key byte, x, y int)
 	mouse           func(button, state, x, y int)
-	motion          func(x, y int)
+	motion          func(x, y int32)
 	passiveMotion   func(x, y int)
 	visibility      func(state int)
 	entry           func(state int)
@@ -545,7 +545,7 @@ func MouseFunc(mouse func(button, state, x, y int)) {
 	}
 }
 
-func MotionFunc(motion func(x, y int)) {
+func MotionFunc(motion func(x, y int32)) {
 	winFuncs[GetWindow()].motion = motion
 	if motion != nil {
 		C.setMotionFunc()
@@ -1000,7 +1000,7 @@ func internalMenuStatusFunc(status, x, y int) {
 }
 
 //export internalMotionFunc
-func internalMotionFunc(x, y int) {
+func internalMotionFunc(x, y int32) {
 	winFuncs[GetWindow()].motion(x, y)
 }
 

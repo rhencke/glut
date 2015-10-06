@@ -3,12 +3,12 @@ Go bindings for GLUT: https://github.com/rhencke/glut
 If you are using Linux, please ensure you have installed GLUT or freeglut.
 
 To install:
-    go get -u github.com/difarem/glut
+    go get -u github.com/rhencke/glut
 
 To run the examples:
-    go get github.com/difarem/glut/examples/asteroids
+    go get github.com/rhencke/glut/examples/asteroids
     asteroids
-    go get github.com/difarem/glut/examples/fontdemo
+    go get github.com/rhencke/glut/examples/fontdemo
     fontdemo
-    go get github.com/difarem/glut/examples/simple
+    go get github.com/rhencke/glut/examples/simple
     simple

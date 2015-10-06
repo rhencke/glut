@@ -15,7 +15,7 @@ import (
 	"os"
 
 	"github.com/go-gl/gl/v2.1/gl"
-	"github.com/difarem/glut"
+	"github.com/rhencke/glut"
 )
 
 var (

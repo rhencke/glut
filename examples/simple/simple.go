@@ -20,8 +20,8 @@
 package main
 
 import (
-	"github.com/go-gl/gl"
-	"github.com/rhencke/glut"
+	"github.com/go-gl/gl/v2.1/gl"
+	"github.com/difarem/glut"
 )
 
 func reshape(w, h int) {
@@ -31,7 +31,7 @@ func reshape(w, h int) {
 	   wouldn't be required if you chose a (more typical in 3D) abstract
 	   coordinate system. */
 
-	gl.Viewport(0, 0, w, h)                       /* Establish viewing area to cover entire window. */
+	gl.Viewport(0, 0, int32(w), int32(h))                       /* Establish viewing area to cover entire window. */
 	gl.MatrixMode(gl.PROJECTION)                  /* Start modifying the projection matrix. */
 	gl.LoadIdentity()                             /* Reset project matrix. */
 	gl.Ortho(0, float64(w), 0, float64(h), -1, 1) /* Map abstract coords directly to window coords. */
@@ -53,6 +53,7 @@ func display() {
 }
 
 func main() {
+	gl.Init()
 	glut.CreateWindow("single triangle")
 	glut.DisplayFunc(display)
 	glut.ReshapeFunc(reshape)

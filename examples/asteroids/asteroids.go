@@ -14,8 +14,8 @@ import (
 	"math"
 	"os"
 
-	"github.com/go-gl/gl"
-	"github.com/rhencke/glut"
+	"github.com/go-gl/gl/v2.1/gl"
+	"github.com/difarem/glut"
 )
 
 var (
@@ -350,6 +350,7 @@ func initWindow() {
 }
 
 func main() {
+	gl.Init()
 	glut.InitDisplayMode(glut.DOUBLE | glut.RGB)
 
 	// FIXME: gamemode causes crash

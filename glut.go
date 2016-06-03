@@ -7,8 +7,6 @@ import (
 	"os"
 	"runtime"
 	"unsafe"
-
-	"github.com/go-gl/gl/v4.5-core/gl"
 )
 
 // #cgo darwin  LDFLAGS: -framework GLUT
@@ -412,7 +410,7 @@ func EstablishOverlay() {
 	C.glutEstablishOverlay()
 }
 
-func UseLayer(layer gl.GLenum) {
+func UseLayer(layer C.GLenum) {
 	C.glutUseLayer(C.GLenum(layer))
 }
 
@@ -700,16 +698,16 @@ func JoystickFunc(joystick func(buttonMask uint, x, y, z int), pollInterval int)
 
 // - Color Index Colormap Management
 
-func SetColor(cell int, red, green, blue gl.GLfloat) {
+func SetColor(cell int, red, green, blue C.GLfloat) {
 	C.glutSetColor(C.int(cell), C.GLfloat(red), C.GLfloat(green), C.GLfloat(blue))
 }
 
-func GetColor(cell int) (red, green, blue gl.GLfloat) {
+func GetColor(cell int) (red, green, blue C.GLfloat) {
 	ccell := C.int(cell)
 
-	red = gl.GLfloat(C.glutGetColor(ccell, RED))
-	green = gl.GLfloat(C.glutGetColor(ccell, GREEN))
-	blue = gl.GLfloat(C.glutGetColor(ccell, BLUE))
+	red = C.GLfloat(C.glutGetColor(ccell, RED))
+	green = C.GLfloat(C.glutGetColor(ccell, GREEN))
+	blue = C.GLfloat(C.glutGetColor(ccell, BLUE))
 
 	return
 }
@@ -720,15 +718,15 @@ func CopyColormap(win Window) {
 
 // - State Retrieval
 
-func Get(state gl.GLenum) int {
+func Get(state C.GLenum) int {
 	return int(C.glutGet(C.GLenum(state)))
 }
 
-func LayerGet(info gl.GLenum) int {
+func LayerGet(info C.GLenum) int {
 	return int(C.glutLayerGet(C.GLenum(info)))
 }
 
-func DeviceGet(info gl.GLenum) int {
+func DeviceGet(info C.GLenum) int {
 	return int(C.glutDeviceGet(C.GLenum(info)))
 }
 
@@ -801,35 +799,35 @@ func (s StrokeFont) Length(str string) int {
 
 // - Geometric Object Rendering
 
-func SolidSphere(radius gl.GLdouble, slices, stacks gl.GLint) {
+func SolidSphere(radius C.GLdouble, slices, stacks C.GLint) {
 	C.glutSolidSphere(C.GLdouble(radius), C.GLint(slices), C.GLint(stacks))
 }
 
-func WireSphere(radius gl.GLdouble, slices, stacks gl.GLint) {
+func WireSphere(radius C.GLdouble, slices, stacks C.GLint) {
 	C.glutWireSphere(C.GLdouble(radius), C.GLint(slices), C.GLint(stacks))
 }
 
-func SolidCube(size gl.GLdouble) {
+func SolidCube(size C.GLdouble) {
 	C.glutSolidCube(C.GLdouble(size))
 }
 
-func WireCube(size gl.GLdouble) {
+func WireCube(size C.GLdouble) {
 	C.glutWireCube(C.GLdouble(size))
 }
 
-func SolidCone(base, height gl.GLdouble, slices, stacks gl.GLint) {
+func SolidCone(base, height C.GLdouble, slices, stacks C.GLint) {
 	C.glutSolidCone(C.GLdouble(base), C.GLdouble(height), C.GLint(slices), C.GLint(stacks))
 }
 
-func WireCone(base, height gl.GLdouble, slices, stacks gl.GLint) {
+func WireCone(base, height C.GLdouble, slices, stacks C.GLint) {
 	C.glutWireCone(C.GLdouble(base), C.GLdouble(height), C.GLint(slices), C.GLint(stacks))
 }
 
-func SolidTorus(innerRadius, outerRadius gl.GLdouble, nsides, rings gl.GLint) {
+func SolidTorus(innerRadius, outerRadius C.GLdouble, nsides, rings C.GLint) {
 	C.glutSolidTorus(C.GLdouble(innerRadius), C.GLdouble(outerRadius), C.GLint(nsides), C.GLint(rings))
 }
 
-func WireTorus(innerRadius, outerRadius gl.GLdouble, nsides, rings gl.GLint) {
+func WireTorus(innerRadius, outerRadius C.GLdouble, nsides, rings C.GLint) {
 	C.glutWireTorus(C.GLdouble(innerRadius), C.GLdouble(outerRadius), C.GLint(nsides), C.GLint(rings))
 }
 
@@ -866,17 +864,17 @@ func WireIcosahedron() {
 }
 
 // And, of course:
-func SolidTeapot(size gl.GLdouble) {
+func SolidTeapot(size C.GLdouble) {
 	C.glutSolidTeapot(C.GLdouble(size))
 }
 
-func WireTeapot(size gl.GLdouble) {
+func WireTeapot(size C.GLdouble) {
 	C.glutWireTeapot(C.GLdouble(size))
 }
 
 // - Video Resize
 
-func VideoResizeGet(param gl.GLenum) int {
+func VideoResizeGet(param C.GLenum) int {
 	return int(C.glutVideoResizeGet(C.GLenum(param)))
 }
 
@@ -943,7 +941,7 @@ func LeaveGameMode() {
 	gameWindow = nil
 }
 
-func GameModeGet(mode gl.GLenum) int {
+func GameModeGet(mode C.GLenum) int {
 	return int(C.glutGameModeGet(C.GLenum(mode)))
 }
 
